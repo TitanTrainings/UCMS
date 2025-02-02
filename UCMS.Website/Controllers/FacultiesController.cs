@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Plugins;
+using UCMS.Website.Filters;
 using UCMS.Website.Models;
 using UCMS.Website.Services;
 
 namespace UCMS.Website.Controllers
 {
-
+    [Authorization]
     public class FacultiesController : Controller
     {
         private readonly IFacultyService _facultyService;

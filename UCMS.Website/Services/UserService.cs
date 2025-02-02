@@ -80,6 +80,10 @@ namespace UCMS.Website.Services
                 User _user = _dbContext.Users.Find(user.UserId);
                 if (_user != null)
                 {
+                    _user.Username = user.Username;
+                    _user.Password = user.Password;
+                    _user.Status = user.Status;
+                    _user.RoleId = user.RoleId;
                     _dbContext.Update(_user);
                     _dbContext.SaveChanges();
                     return _user;

@@ -11,28 +11,27 @@ using UCMS.Website.Services;
 
 namespace UCMS.Website.Controllers
 {
-
-    public class FacultiesController : Controller
+    public class CoursesController : Controller
     {
-        private readonly IFacultyService _facultyService;
+        private readonly ICourseService _CourseService;
 
-        public FacultiesController(IFacultyService facultyService)
+        public CoursesController(ICourseService courseService)
         {
-            _facultyService = facultyService;
+            _CourseService = courseService;
         }
 
-        // GET: Faculties
+        // GET: Courses
         public IActionResult Index()
         {
-            if (TempData["FacultyCreationResponse"] != null)
+            if (TempData["CourseCreationResponse"] != null)
             {
-                ViewBag.Message = TempData["FacultyCreationResponse"];
+                ViewBag.Message = TempData["CourseCreationResponse"];
             }
-            var faculties = _facultyService.GetFaculties().ToList();
-            return View(faculties);
+            var courses = _CourseService.GetCourses().ToList();
+            return View(courses);
         }
 
-        // GET: Faculties/Details/5
+        // GET: Courses/Details/5
         public IActionResult Details(int id)
         {
             if (id <= 0)
@@ -40,102 +39,102 @@ namespace UCMS.Website.Controllers
                 return NotFound();
             }
 
-            var faculty = _facultyService.GetFacultyById(id);
+            var course = _CourseService.GetCourseById(id);
 
-            if (faculty == null)
+            if (course == null)
             {
                 return NotFound();
             }
 
-            return View(faculty);
+            return View(course);
         }
 
-        // GET: Faculties/Create
+        // GET: Courses/Create
         public IActionResult Create()
-        {
+        {           
             return View();
         }
 
-        // POST: Faculties/Create
+        // POST: Courses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("FacultyId,FirstName,LastName,Email,RoleId")] Faculty faculty)
+        public IActionResult Create([Bind("CourseId,Title,Detail,FacultyId,Duration,Status")] Course course)
         {
-            var result = _facultyService.CreateFaculty(faculty);
+            var result = _CourseService.CreateCourse(course);
             if (result != null)
             {
-                TempData["FacultyCreationResponse"] = "Faculty Created Successfully.";
+                TempData["CourseCreationResponse"] = "Course Created Successfully.";
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                TempData["FacultyCreationResponse"] = "Unable to create the faculty..";
+                TempData["CourseCreationResponse"] = "Unable to create the faculty..";
                 return RedirectToAction(nameof(Index));
             }
         }
 
-        // GET: Faculties/Edit/5
+        // GET: Courses/Edit/5
         public IActionResult Edit(int id)
         {
-            var faculty = _facultyService.GetFacultyById(id);
+            var course = _CourseService.GetCourseById(id);
 
             if (id <= 0)
             {
                 return NotFound();
             }
 
-            return View(faculty);
+            return View(course);
         }
 
-        // POST: Faculties/Edit/5
+        // POST: Courses/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("FacultyId,FirstName,LastName,Email,RoleId")] Faculty faculty)
-        {            
-            if (id != faculty.FacultyId)
+        public IActionResult Edit(int id, [Bind("CourseId,Title,Detail,FacultyId,Duration,Status")] Course course)
+        {
+            if (id != course.CourseId)
             {
                 return NotFound();
             }
 
             try
             {
-               var result = _facultyService.UpdateFaculty(faculty);
+                var result = _CourseService.UpdateCourse(course);
                 if (result != null)
                 {
-                    TempData["FacultyUpdatedResponse"] = "Faculty updated successfully.";
+                    TempData["FacultyUpdatedResponse"] = "Course updated successfully.";
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    TempData["FacultyUpdatedResponse"] = "Unable to update the faculty.";
-                    return RedirectToAction(nameof(Edit), faculty);
+                    TempData["FacultyUpdatedResponse"] = "Unable to update the Course.";
+                    return RedirectToAction(nameof(Edit), course);
                 }
-               
+
             }
             catch (Exception ex)
             {
                 throw;
-            }                      
+            }
         }
 
-        // GET: Faculties/Delete/5
+        // GET: Courses/Delete/5
         public IActionResult Delete(int id)
         {
-            var faculty = _facultyService.GetFacultyById(id);
+            var course = _CourseService.GetCourseById(id);
 
             if (id <= 0)
             {
                 return NotFound();
             }
 
-            return View(faculty);
+            return View(course);
         }
 
-        // POST: Faculties/Delete/5
+        // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -147,24 +146,26 @@ namespace UCMS.Website.Controllers
 
             try
             {
-                var result  = _facultyService.DeleteFaculty(id);
-                if(result == "success")
+                var result = _CourseService.DeleteCourse(id);
+                if (result == "success")
                 {
-                    TempData["FacultyDeletedResponse"] = "Faculty deleted successfully.";
+                    TempData["CourseDeletedResponse"] = "Course deleted successfully.";
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    var deletefaculty = _facultyService.GetFacultyById(id);
-                    TempData["FacultyDeletedResponse"] = "Unable to delete the faculty.";
-                    return RedirectToAction(nameof(Delete), deletefaculty);
+                    var deletecourse = _CourseService.GetCourseById(id);
+                    TempData["CourseDeletedResponse"] = "Unable to delete the Course.";
+                    return RedirectToAction(nameof(Delete), deletecourse);
                 }
-                
+
             }
             catch (Exception ex)
             {
                 throw;
             }
-        }        
+        }
+
+       
     }
 }

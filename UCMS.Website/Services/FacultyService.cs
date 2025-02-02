@@ -85,6 +85,12 @@ namespace UCMS.Website.Services
                 return null;
             }            
         }
+
+        public List<Role> GetRoles()
+        {
+            List<Role> roles = _dbContext.Roles.ToList();
+            return roles;
+        }
     }
 }
 

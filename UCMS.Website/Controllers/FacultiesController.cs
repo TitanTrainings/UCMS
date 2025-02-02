@@ -53,6 +53,7 @@ namespace UCMS.Website.Controllers
         // GET: Faculties/Create
         public IActionResult Create()
         {
+            ViewBag.Roles = new SelectList(_facultyService.GetRoles(), "RoleName", "RoleName");
             return View();
         }
 

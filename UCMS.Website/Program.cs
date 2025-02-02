@@ -24,6 +24,8 @@ builder.Services.AddAuthentication("Cookies")
         options.LogoutPath = "/Account/Logout"; // Define your logout path
     });
 
+builder.Services.AddLogging();
+
 //Register the database Db context service
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

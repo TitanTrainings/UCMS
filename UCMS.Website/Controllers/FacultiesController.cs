@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Plugins;
 using UCMS.Website.Models;
 using UCMS.Website.Services;
 
@@ -65,8 +66,8 @@ namespace UCMS.Website.Controllers
             var result = _facultyService.CreateFaculty(faculty);
             if (result != null)
             {
-                TempData["FacultyCreationResponse"] = "User Created Successfully.";
-                return RedirectToAction("Index");
+                TempData["FacultyCreationResponse"] = "Faculty Created Successfully.";
+                return RedirectToAction(nameof(Index));
             }
 
             return View();
@@ -90,10 +91,8 @@ namespace UCMS.Website.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FacultyId,FirstName,LastName,Email,RoleId")] Faculty faculty)
-        {
-            // make changes as per requirement.
-
+        public IActionResult Edit(int id, [Bind("FacultyId,FirstName,LastName,Email,RoleId")] Faculty faculty)
+        {            
             if (id != faculty.FacultyId)
             {
                 return NotFound();
@@ -102,66 +101,48 @@ namespace UCMS.Website.Controllers
             try
             {
                 _facultyService.UpdateFaculty(faculty);
-
+                TempData["FacultyUpdatedResponse"] = "Faculty updated successfully.";
+                return RedirectToAction(nameof(Index));
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!FacultyExists(faculty.FacultyId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Index));
-
-            return View(faculty);
+                throw;
+            }                      
         }
 
         // GET: Faculties/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            // make changes as per requirement.
+            var faculty = _facultyService.GetFacultyById(id);
 
-            if (id == null)
+            if (id <= 0)
             {
                 return NotFound();
             }
 
-            //var faculty = await _context.Faculty
-            //    .FirstOrDefaultAsync(m => m.FacultyId == id);
-            //if (faculty == null)
-            //{
-            //    return NotFound();
-            //}
-
-            return View();
+            return View(faculty);
         }
 
         // POST: Faculties/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            // make changes as per requirement
+            if (id <= 0)
+            {
+                return NotFound();
+            }
 
-
-            //var faculty = await _context.Faculty.FindAsync(id);
-            //if (faculty != null)
-            //{
-            //    _context.Faculty.Remove(faculty);
-            //}
-
-            //await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool FacultyExists(int id)
-        {
-            //make changes as per requirement.
-            return true;
-        }
+            try
+            {
+                _facultyService.DeleteFaculty(id);
+                TempData["FacultyDeletedResponse"] = "Faculty deleted successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }        
     }
 }

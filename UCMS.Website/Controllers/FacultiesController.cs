@@ -10,6 +10,7 @@ using UCMS.Website.Services;
 
 namespace UCMS.Website.Controllers
 {
+    [Autho]
     public class FacultiesController : Controller
     {
         private readonly IFacultyService _facultyService;

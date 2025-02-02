@@ -11,27 +11,87 @@ namespace UCMS.Website.Services
         }
         public User CreateUser(User user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _dbContext.Users.Add(user);
+                _dbContext.SaveChanges();
+                return user;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return null;
         }
 
         public string DeleteUser(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                User user = _dbContext.Users.Find(id);
+                _dbContext.Remove(user);
+                _dbContext.SaveChanges();
+
+                return "success";
+            }
+            catch (Exception ex)
+            {
+                return "error";
+            }
         }
 
         public User GetUserById(int id)
         {
-            throw new NotImplementedException();
+            User user = _dbContext.Users.Find(id);
+            if (user != null)
+            {
+                return user;
+            }
+
+            return null;
+        }
+
+        public User GetUserByUsernameAndPassword(User user)
+        {
+            User loginuser = _dbContext.Users.Where(x => x.Username == user.Username && x.Password == user.Password).FirstOrDefault();
+            if (user != null)
+            {
+                return loginuser;
+            }
+
+            return null;
         }
 
         public List<User> GetUsers()
         {
-            throw new NotImplementedException();
+            List<User> user = _dbContext.Users.ToList();
+            if (user != null)
+            {
+                return user;
+            }
+
+            return null;
         }
 
         public User UpdateUser(User user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                User _user = _dbContext.Users.Find(user.UserId);
+                if (_user != null)
+                {
+                    _dbContext.Update(_user);
+                    _dbContext.SaveChanges();
+                    return _user;
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return null;
         }
     }
 }

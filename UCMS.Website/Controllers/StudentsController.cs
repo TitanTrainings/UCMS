@@ -21,6 +21,7 @@ namespace UCMS.Website.Controllers
         }
 
         // GET: Students
+        [AuthorizedRole("1")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Students.ToListAsync());

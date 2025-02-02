@@ -30,9 +30,9 @@ namespace UCMS.Website.Controllers
             var loginuser = _userService.GetUserByUsernameAndPassword(user);
             if (loginuser != null)
             {
-                HttpContext.Session.SetString("Username", user.Username);
+                HttpContext.Session.SetString("Username", loginuser.Username);
 
-                HttpContext.Session.SetString("Role", user.RoleId.ToString());
+                HttpContext.Session.SetString("Role", loginuser.RoleId.ToString());               
 
                 if (loginuser.RoleId == 2 || loginuser.RoleId == 3)
                 {

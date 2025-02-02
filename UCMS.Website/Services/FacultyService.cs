@@ -21,7 +21,7 @@ namespace UCMS.Website.Services
             }
             catch (Exception ex)
             {
-
+                
             }
             return null;
         }
@@ -66,10 +66,15 @@ namespace UCMS.Website.Services
             {
                 var updatefaculty = _dbContext.Faculty.Find(faculty.FacultyId);
                 if (updatefaculty != null)
-                { }
-                _dbContext.Update(faculty);
-                _dbContext.SaveChanges();
-                return faculty;
+                {
+                    _dbContext.Update(faculty);
+                    _dbContext.SaveChanges();
+                    return faculty;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception ex)
             {

@@ -69,8 +69,11 @@ namespace UCMS.Website.Controllers
                 TempData["FacultyCreationResponse"] = "Faculty Created Successfully.";
                 return RedirectToAction(nameof(Index));
             }
-
-            return View();
+            else
+            {
+                TempData["FacultyCreationResponse"] = "Unable to create the faculty..";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Faculties/Edit/5
@@ -100,9 +103,18 @@ namespace UCMS.Website.Controllers
 
             try
             {
-                _facultyService.UpdateFaculty(faculty);
-                TempData["FacultyUpdatedResponse"] = "Faculty updated successfully.";
-                return RedirectToAction(nameof(Index));
+               var result = _facultyService.UpdateFaculty(faculty);
+                if (result != null)
+                {
+                    TempData["FacultyUpdatedResponse"] = "Faculty updated successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["FacultyUpdatedResponse"] = "Unable to update the faculty.";
+                    return RedirectToAction(nameof(Edit));
+                }
+               
             }
             catch (Exception ex)
             {
@@ -135,9 +147,19 @@ namespace UCMS.Website.Controllers
 
             try
             {
-                _facultyService.DeleteFaculty(id);
-                TempData["FacultyDeletedResponse"] = "Faculty deleted successfully.";
-                return RedirectToAction(nameof(Index));
+                var result  = _facultyService.DeleteFaculty(id);
+                if(result == "success")
+                {
+                    TempData["FacultyDeletedResponse"] = "Faculty deleted successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    var deletefaculty = _facultyService.GetFacultyById(id);
+                    TempData["FacultyDeletedResponse"] = "Unable to delete the faculty.";
+                    return RedirectToAction(nameof(Delete), deletefaculty);
+                }
+                
             }
             catch (Exception ex)
             {

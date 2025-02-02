@@ -23,6 +23,7 @@ namespace UCMS.Website.Controllers
         }
 
         // GET: Faculties
+        [AuthorizedRole("2")]
         public IActionResult Index()
         {
             if (TempData["FacultyCreationResponse"] != null)

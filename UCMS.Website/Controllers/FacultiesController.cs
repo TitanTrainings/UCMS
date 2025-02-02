@@ -22,7 +22,7 @@ namespace UCMS.Website.Controllers
 
         // GET: Faculties
         public IActionResult Index()
-        {
+        { string msg = string.Empty;
             if (TempData["FacultyCreationResponse"] != null)
             {
                 ViewBag.Message = TempData["FacultyCreationResponse"];

@@ -13,10 +13,12 @@ namespace UCMS.Website.Controllers
     public class FacultiesController : Controller
     {
         private readonly IFacultyService _facultyService;
+        private readonly ApplicationDbContext _context;
 
-        public FacultiesController(IFacultyService facultyService)
+        public FacultiesController(IFacultyService facultyService, ApplicationDbContext context)
         {
             _facultyService = facultyService;
+            _context = context; 
         }
 
         // GET: Faculties
@@ -51,6 +53,7 @@ namespace UCMS.Website.Controllers
         // GET: Faculties/Create
         public IActionResult Create()
         {
+            ViewBag.Roles = new SelectList(_context.Roles, "RoleName", "RoleName");
             return View();
         }
 

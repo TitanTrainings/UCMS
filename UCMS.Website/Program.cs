@@ -9,20 +9,15 @@ builder.Services.AddControllersWithViews();
 
 // Register services to enable sessions
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(20); // Set session timeout
     options.Cookie.HttpOnly = true; // Set HttpOnly for session cookies
     options.Cookie.IsEssential = true; // Mark the cookie as essential
 });
-
-builder.Services.AddAuthentication("Cookies")
-    .AddCookie("Cookies", options =>
-    {
-        options.LoginPath = "/Account/Login";  // Define your login path
-        options.LogoutPath = "/Account/Logout"; // Define your logout path
-    });
 
 builder.Services.AddLogging();
 
@@ -47,8 +42,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
-
-app.UseAuthentication();
 
 app.UseAuthorization();
 

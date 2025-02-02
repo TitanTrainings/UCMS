@@ -67,7 +67,11 @@ namespace UCMS.Website.Services
                 var updatefaculty = _dbContext.Faculty.Find(faculty.FacultyId);
                 if (updatefaculty != null)
                 {
-                    _dbContext.Update(faculty);
+                    updatefaculty.FirstName = faculty.FirstName;
+                    updatefaculty.LastName = faculty.LastName;
+                    updatefaculty.Email = faculty.Email;
+                    updatefaculty.RoleId = faculty.RoleId;
+                    _dbContext.Update(updatefaculty);
                     _dbContext.SaveChanges();
                     return faculty;
                 }

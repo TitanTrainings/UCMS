@@ -1,4 +1,5 @@
-﻿using UCMS.Website.Models;
+﻿using NuGet.Protocol.Plugins;
+using UCMS.Website.Models;
 
 namespace UCMS.Website.Services
 {
@@ -18,16 +19,33 @@ namespace UCMS.Website.Services
 
                 return faculty;
             }
-            catch (Exception ex) 
-            { 
-
+            catch (Exception ex)
+            {
+                
             }
             return null;
         }
 
         public string DeleteFaculty(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var faculty = _dbContext.Faculty.Find(id);
+                if (faculty != null)
+                {
+                    _dbContext.Remove(faculty);
+                    _dbContext.SaveChanges();
+                    return "success";
+                }
+                else
+                {
+                    return "error";
+                }                
+            }
+            catch (Exception ex)
+            {
+                return "error";
+            }
         }
 
         public List<Faculty> GetFaculties()
@@ -44,7 +62,35 @@ namespace UCMS.Website.Services
 
         public Faculty UpdateFaculty(Faculty faculty)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var updatefaculty = _dbContext.Faculty.Find(faculty.FacultyId);
+                if (updatefaculty != null)
+                {
+                    updatefaculty.FirstName = faculty.FirstName;
+                    updatefaculty.LastName = faculty.LastName;
+                    updatefaculty.Email = faculty.Email;
+                    updatefaculty.RoleId = faculty.RoleId;
+                    _dbContext.Update(updatefaculty);
+                    _dbContext.SaveChanges();
+                    return faculty;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }            
+        }
+
+        public List<Role> GetRoles()
+        {
+            List<Role> roles = _dbContext.Roles.ToList();
+            return roles;
         }
     }
 }
+

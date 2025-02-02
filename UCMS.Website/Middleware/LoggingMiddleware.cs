@@ -8,16 +8,50 @@ namespace UCMS.Website.Middleware
     public class LoggingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<LoggingMiddleware> _logger;
 
-        public LoggingMiddleware(RequestDelegate next)
+        public LoggingMiddleware(RequestDelegate next, ILogger<LoggingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
-        public Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext)
         {
+            var user = httpContext.User.Identity?.Name ?? "Anonymous";
+            var requestPath = httpContext.Request.Path;
+            var method = httpContext.Request.Method;
+            var ipAddress = httpContext.Connection.RemoteIpAddress?.ToString();
+            var timestamp = DateTimeOffset.UtcNow;
 
-            return _next(httpContext);
+            //Log to file
+            var logMessage = $"{timestamp} | User: {user} | IP: {ipAddress} | Method: {method} | Path: {requestPath}";
+
+            //Detect login attempts
+            if (requestPath.StartsWithSegments("/Authentication/Login", StringComparison.OrdinalIgnoreCase) && method == "POST")
+            {
+                logMessage += " | Action: Login Attempt";
+            }
+
+            //Detect course enrollment
+            if (requestPath.StartsWithSegments("/Courses/Enroll", StringComparison.OrdinalIgnoreCase) && method == "POST")
+            {
+                logMessage += " | Action: Course Enrollment";
+            }
+
+            _logger.LogInformation(logMessage);
+
+            //Write to file
+            string logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
+            string logFilePath = Path.Combine(logDirectory, "UserActivityLog.txt");
+
+            //Ensure the logs directory exists
+            if (Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+            await File.AppendAllTextAsync(logFilePath, logMessage + Environment.NewLine);
+            await _next(httpContext);
         }
     }
 

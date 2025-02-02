@@ -1,4 +1,4 @@
-﻿@model UCMS.Website.Models.Faculty
+﻿@model UCMS.Website.Models.Student
 
 @{
     ViewData["Title"] = "Create";
@@ -7,7 +7,7 @@
 
 <h1>Create</h1>
 
-<h4>Faculty</h4>
+<h4>Student</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -30,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="RoleId" class="control-label"></label>
-                <select asp-for="RoleId" class="form-control" asp-items="@ViewBag.Roles"></select>
+                <input asp-for="RoleId" class="form-control" />
                 <span asp-validation-for="RoleId" class="text-danger"></span>
             </div>
             <div class="form-group">

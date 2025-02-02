@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Plugins;
 using UCMS.Website.Models;
 using UCMS.Website.Services;
 
 namespace UCMS.Website.Controllers
 {
+
     public class FacultiesController : Controller
     {
         private readonly IFacultyService _facultyService;
-        private readonly ApplicationDbContext _context;
 
-        public FacultiesController(IFacultyService facultyService, ApplicationDbContext context)
+        public FacultiesController(IFacultyService facultyService)
         {
             _facultyService = facultyService;
-            _context = context; 
         }
 
         // GET: Faculties
@@ -53,7 +53,7 @@ namespace UCMS.Website.Controllers
         // GET: Faculties/Create
         public IActionResult Create()
         {
-            ViewBag.Roles = new SelectList(_context.Roles, "RoleName", "RoleName");
+            ViewBag.Roles = new SelectList(_facultyService.GetRoles(), "RoleName", "RoleName");
             return View();
         }
 
@@ -67,30 +67,27 @@ namespace UCMS.Website.Controllers
             var result = _facultyService.CreateFaculty(faculty);
             if (result != null)
             {
-                TempData["FacultyCreationResponse"] = "User Created Successfully.";
-                return RedirectToAction("Index");
+                TempData["FacultyCreationResponse"] = "Faculty Created Successfully.";
+                return RedirectToAction(nameof(Index));
             }
-
-            return View();
+            else
+            {
+                TempData["FacultyCreationResponse"] = "Unable to create the faculty..";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Faculties/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            // make changes as per requirement.
+            var faculty = _facultyService.GetFacultyById(id);
 
-
-            if (id == null)
+            if (id <= 0)
             {
                 return NotFound();
             }
 
-            //var faculty = await _context.Faculty.FindAsync(id);
-            //if (faculty == null)
-            //{
-            //    return NotFound();
-            //}
-            return View();
+            return View(faculty);
         }
 
         // POST: Faculties/Edit/5
@@ -98,79 +95,77 @@ namespace UCMS.Website.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FacultyId,FirstName,LastName,Email,RoleId")] Faculty faculty)
-        {
-            // make changes as per requirement.
-
+        public IActionResult Edit(int id, [Bind("FacultyId,FirstName,LastName,Email,RoleId")] Faculty faculty)
+        {            
             if (id != faculty.FacultyId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+               var result = _facultyService.UpdateFaculty(faculty);
+                if (result != null)
                 {
-
+                    TempData["FacultyUpdatedResponse"] = "Faculty updated successfully.";
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!FacultyExists(faculty.FacultyId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    TempData["FacultyUpdatedResponse"] = "Unable to update the faculty.";
+                    return RedirectToAction(nameof(Edit));
                 }
-                return RedirectToAction(nameof(Index));
+               
             }
-            return View(faculty);
+            catch (Exception ex)
+            {
+                throw;
+            }                      
         }
 
         // GET: Faculties/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            // make changes as per requirement.
+            var faculty = _facultyService.GetFacultyById(id);
 
-            if (id == null)
+            if (id <= 0)
             {
                 return NotFound();
             }
 
-            //var faculty = await _context.Faculty
-            //    .FirstOrDefaultAsync(m => m.FacultyId == id);
-            //if (faculty == null)
-            //{
-            //    return NotFound();
-            //}
-
-            return View();
+            return View(faculty);
         }
 
         // POST: Faculties/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            // make changes as per requirement
+            if (id <= 0)
+            {
+                return NotFound();
+            }
 
-
-            //var faculty = await _context.Faculty.FindAsync(id);
-            //if (faculty != null)
-            //{
-            //    _context.Faculty.Remove(faculty);
-            //}
-
-            //await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool FacultyExists(int id)
-        {
-            //make changes as per requirement.
-            return true;
-        }
+            try
+            {
+                var result  = _facultyService.DeleteFaculty(id);
+                if(result == "success")
+                {
+                    TempData["FacultyDeletedResponse"] = "Faculty deleted successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    var deletefaculty = _facultyService.GetFacultyById(id);
+                    TempData["FacultyDeletedResponse"] = "Unable to delete the faculty.";
+                    return RedirectToAction(nameof(Delete), deletefaculty);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }        
     }
 }

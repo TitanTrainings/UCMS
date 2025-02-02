@@ -9,5 +9,6 @@ namespace UCMS.Website.Services
         public User CreateUser(User user);
         public User UpdateUser(User user);
         public string DeleteUser(int id);
+        public User GetUserByUsernameAndPassword(User user);
     }
 }

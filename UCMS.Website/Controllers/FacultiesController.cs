@@ -10,7 +10,7 @@ using UCMS.Website.Services;
 
 namespace UCMS.Website.Controllers
 {
-  
+
     public class FacultiesController : Controller
     {
         private readonly IFacultyService _facultyService;
@@ -73,22 +73,16 @@ namespace UCMS.Website.Controllers
         }
 
         // GET: Faculties/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            // make changes as per requirement.
+            var faculty = _facultyService.GetFacultyById(id);
 
-
-            if (id == null)
+            if (id <= 0)
             {
                 return NotFound();
             }
 
-            //var faculty = await _context.Faculty.FindAsync(id);
-            //if (faculty == null)
-            //{
-            //    return NotFound();
-            //}
-            return View();
+            return View(faculty);
         }
 
         // POST: Faculties/Edit/5
@@ -105,25 +99,24 @@ namespace UCMS.Website.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
+                _facultyService.UpdateFaculty(faculty);
 
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FacultyExists(faculty.FacultyId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
             }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FacultyExists(faculty.FacultyId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+
             return View(faculty);
         }
 

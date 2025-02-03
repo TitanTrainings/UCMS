@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using UCMS.Website.Filters;
 using UCMS.Website.Models;
 
 namespace UCMS.Website.Controllers
 {
+    [Authorization]
     public class EnrollmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,6 +21,7 @@ namespace UCMS.Website.Controllers
         }
 
         // GET: Enrollments
+        [AuthorizedRole("1")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student);
@@ -26,7 +29,7 @@ namespace UCMS.Website.Controllers
         }
 
         // GET: Enrollments/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? courseId)
         {
             if (id == null)
             {
@@ -36,7 +39,7 @@ namespace UCMS.Website.Controllers
             var enrollment = await _context.Enrollments
                 .Include(e => e.Course)
                 .Include(e => e.Student)
-                .FirstOrDefaultAsync(m => m.StudentId == id);
+                .FirstOrDefaultAsync(m => m.StudentId == id && m.CourseId == courseId);
             if (enrollment == null)
             {
                 return NotFound();
@@ -77,14 +80,14 @@ namespace UCMS.Website.Controllers
         }
 
         // GET: Enrollments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? courseId)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var enrollment = await _context.Enrollments.FindAsync(id);
+            var enrollment = await _context.Enrollments.FirstOrDefaultAsync(x=>x.StudentId == id && x.CourseId == courseId);
             if (enrollment == null)
             {
                 return NotFound();
@@ -99,9 +102,9 @@ namespace UCMS.Website.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EnrollmentId,StudentId,CourseId,Progress,CreatedDate,LastDate,Status")] Enrollment enrollment)
+        public async Task<IActionResult> Edit(int id, int? courseId, [Bind("EnrollmentId,StudentId,CourseId,Progress,CreatedDate,LastDate,Status")] Enrollment enrollment)
         {
-            if (id != enrollment.StudentId)
+            if (id != enrollment.StudentId && courseId != enrollment.CourseId)
             {
                 return NotFound();
             }
@@ -132,7 +135,7 @@ namespace UCMS.Website.Controllers
         }
 
         // GET: Enrollments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int? courseId)
         {
             if (id == null)
             {
@@ -142,7 +145,7 @@ namespace UCMS.Website.Controllers
             var enrollment = await _context.Enrollments
                 .Include(e => e.Course)
                 .Include(e => e.Student)
-                .FirstOrDefaultAsync(m => m.StudentId == id);
+                .FirstOrDefaultAsync(m => m.StudentId == id && m.CourseId == courseId);
             if (enrollment == null)
             {
                 return NotFound();
@@ -154,9 +157,9 @@ namespace UCMS.Website.Controllers
         // POST: Enrollments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int? courseId)
         {
-            var enrollment = await _context.Enrollments.FindAsync(id);
+            var enrollment = await _context.Enrollments.FirstOrDefaultAsync(x => x.StudentId == id && x.CourseId == courseId);
             if (enrollment != null)
             {
                 _context.Enrollments.Remove(enrollment);

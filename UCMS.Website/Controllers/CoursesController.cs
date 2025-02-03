@@ -14,10 +14,12 @@ namespace UCMS.Website.Controllers
     public class CoursesController : Controller
     {
         private readonly ICourseService _CourseService;
+        private readonly IFacultyService _facultyService;
 
-        public CoursesController(ICourseService courseService)
+        public CoursesController(ICourseService courseService, IFacultyService facultyService)
         {
             _CourseService = courseService;
+            _facultyService = facultyService;
         }
 
         // GET: Courses
@@ -28,6 +30,7 @@ namespace UCMS.Website.Controllers
                 ViewBag.Message = TempData["CourseCreationResponse"];
             }
             var courses = _CourseService.GetCourses().ToList();
+            ViewBag.FacultyId = new SelectList(_facultyService.GetFaculties(), "FacultyId", "FirstName");
             return View(courses);
         }
 
@@ -45,13 +48,14 @@ namespace UCMS.Website.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.FacultyId = new SelectList(_facultyService.GetFaculties(), "FacultyId", "FirstName");
             return View(course);
         }
 
         // GET: Courses/Create
         public IActionResult Create()
-        {           
+        {
+            ViewBag.FacultyId = new SelectList(_facultyService.GetFaculties(), "FacultyId", "FirstName");           
             return View();
         }
 
@@ -62,6 +66,7 @@ namespace UCMS.Website.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind("CourseId,Title,Detail,FacultyId,Duration,Status")] Course course)
         {
+            
             var result = _CourseService.CreateCourse(course);
             if (result != null)
             {
@@ -84,7 +89,7 @@ namespace UCMS.Website.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.FacultyId = new SelectList(_facultyService.GetFaculties(), "FacultyId", "FirstName");
             return View(course);
         }
 
@@ -130,7 +135,7 @@ namespace UCMS.Website.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.FacultyId = new SelectList(_facultyService.GetFaculties(), "FacultyId", "FirstName");
             return View(course);
         }
 

@@ -71,7 +71,7 @@ namespace UCMS.Website.Controllers
             }
             else
             {
-                TempData["FacultyCreationResponse"] = "Unable to create the faculty..";
+                TempData["FacultyCreationResponse"] = "Unable to create the faculty.";
                 return RedirectToAction(nameof(Index));
             }
         }

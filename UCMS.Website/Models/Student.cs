@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UCMS.Website.Models
 {
@@ -19,8 +20,8 @@ namespace UCMS.Website.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; } = string.Empty;
 
+        [ForeignKey("Role")]
         public int RoleId { get; set; }
-
 
         //Navigation Properties
 

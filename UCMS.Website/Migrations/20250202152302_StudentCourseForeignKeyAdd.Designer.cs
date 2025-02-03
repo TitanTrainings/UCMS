@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UCMS.Website.Models;
 
@@ -11,9 +12,11 @@ using UCMS.Website.Models;
 namespace UCMS.Website.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250202152302_StudentCourseForeignKeyAdd")]
+    partial class StudentCourseForeignKeyAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +45,7 @@ namespace UCMS.Website.Migrations
 
                     b.HasKey("AnnouncementId");
 
-                    b.ToTable("Announcements", (string)null);
+                    b.ToTable("Announcements");
                 });
 
             modelBuilder.Entity("UCMS.Website.Models.Course", b =>
@@ -76,7 +79,7 @@ namespace UCMS.Website.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("UCMS.Website.Models.Enrollment", b =>
@@ -107,7 +110,7 @@ namespace UCMS.Website.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("UCMS.Website.Models.Faculty", b =>
@@ -138,7 +141,7 @@ namespace UCMS.Website.Migrations
 
                     b.HasKey("FacultyId");
 
-                    b.ToTable("Faculty", (string)null);
+                    b.ToTable("Faculty");
                 });
 
             modelBuilder.Entity("UCMS.Website.Models.Role", b =>
@@ -155,7 +158,7 @@ namespace UCMS.Website.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("UCMS.Website.Models.Student", b =>
@@ -184,7 +187,7 @@ namespace UCMS.Website.Migrations
 
                     b.HasKey("StudentId");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("UCMS.Website.Models.User", b =>
@@ -211,7 +214,7 @@ namespace UCMS.Website.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("UCMS.Website.Models.Course", b =>

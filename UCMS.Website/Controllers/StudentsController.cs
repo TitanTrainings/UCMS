@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UCMS.Website.Filters;
 using UCMS.Website.Models;
@@ -20,8 +15,7 @@ namespace UCMS.Website.Controllers
             _context = context;
         }
 
-        // GET: Students
-        [AuthorizedRole("1")]
+        // GET: Students      
         public async Task<IActionResult> Index()
         {
             return View(await _context.Students.ToListAsync());

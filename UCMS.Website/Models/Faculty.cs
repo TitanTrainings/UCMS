@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UCMS.Website.Models
 {
@@ -18,8 +19,10 @@ namespace UCMS.Website.Models
         [Required(ErrorMessage = "Email is required")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; } = string.Empty;
+        [ForeignKey("Role")]
         public int RoleId { get; set; }
-
+        [ForeignKey("Course")]
+        public int? CourseId { get; set; }
 
         // Navigation Properties      
         public List<Course> Courses { get; set; }
